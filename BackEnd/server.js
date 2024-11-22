@@ -16,7 +16,33 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get('/api/movies', (req, res) => {
+const mongoose = require('mongoose');
+mongoose.connect('mongodb+srv://123:123@cluster0.wky8o.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+
+const movieSchema = new mongoose.Schema({
+  title: String,
+  year: String,
+  poster: String
+});
+
+const Movie = mongoose.model('Movie', movieSchema);
+
+app.post('/api/movies', async (req, res)=>{
+
+  const { title, year, poster } = req.body;
+ 
+  const newMovie = new Movie({ title, year, poster });
+  await newMovie.save();
+ 
+  res.status(201).json({ message: 'Movie created successfully', movie: newMovie });
+  })
+
+app.get('/api/movies', async (req, res) => {
+  const movies = await Movie.find({});
+  res.json(movies);
+});
+
+app.get('/api/movies/server', (req, res) => {
     const movies = [
         {
           "Title": "Avengers: Infinity War (server)",
@@ -43,10 +69,10 @@ app.get('/api/movies', (req, res) => {
     res.status(200).json({movies})
 });
 
-app.post('/api/movies',(req, res)=>{
-    console.log(req.body.title);
-    res.send("Movie Added!");
-})
+app.get('/api/movies/:id', async (req, res) => {
+  const movie = await Movie.findById(req.params.id);
+  res.send(movie);
+});
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
