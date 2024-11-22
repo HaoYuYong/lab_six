@@ -12,8 +12,8 @@ const MovieItem = (props)=> {
         <Card.Header>{props.mymovie.Title}</Card.Header>
         <Card.Body>
           <blockquote className="blockquote mb-0">
-            <img src={props.mymovie.Poster} alt={props.mymovie.Title} />
-            <footer>{props.mymovie.Year}</footer>
+            <img src={props.mymovie.poster} alt={props.mymovie.title} />
+            <footer>{props.mymovie.year}</footer>
           </blockquote>
         </Card.Body>
       </Card>
